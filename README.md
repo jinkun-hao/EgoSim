@@ -3,7 +3,7 @@
 <div align="center">
 
 
-[Jinkun Hao](https://jinkun-hao.github.io/)<sup>1*</sup>, [Mingda Jia](https://github.com/Luyitas)<sup>2*</sup>, Ruiyan Wang<sup>1</sup>, [Xihui Liu](https://xh-liu.github.io/)<sup>3</sup>, [Ran Yi](https://yiranran.github.io/)<sup>1†</sup>, [Lizhuang Ma](https://dmcv.sjtu.edu.cn/people/)<sup>1†</sup>, [Jiangmiao Pang](https://oceanpang.github.io/)<sup>2</sup>, [Xudong Xu](https://sheldontsui.github.io/)<sup>2</sup>
+[Jinkun Hao](https://jinkun-hao.github.io/)<sup>1*</sup>, [Mingda Jia](https://luyitas.github.io/)<sup>2*</sup>, Ruiyan Wang<sup>1</sup>, [Xihui Liu](https://xh-liu.github.io/)<sup>3</sup>, [Ran Yi](https://yiranran.github.io/)<sup>1†</sup>, [Lizhuang Ma](https://dmcv.sjtu.edu.cn/people/)<sup>1†</sup>, [Jiangmiao Pang](https://oceanpang.github.io/)<sup>2</sup>, [Xudong Xu](https://sheldontsui.github.io/)<sup>2</sup>
 
 <sup>1</sup> Shanghai Jiao Tong University &nbsp;&nbsp; <sup>2</sup> Shanghai AI Laboratory &nbsp;&nbsp; <sup>3</sup> The University of Hong Kong
 

@@ -35,10 +35,5 @@ Code will be released soon. Stay tuned!
 ## Citation
 
 ```bibtex
-@inproceedings{hao2026egosim,
-  title     = {EgoSim: Egocentric World Simulator for Embodiment Interaction Generation},
-  author    = {Hao, Jinkun and Jia, Mingda and Wang, Ruiyan and Liu, Xihui and Yi, Ran and Ma, Lizhuang and Pang, Jiangmiao and Xu, Xudong},
-  booktitle = {European Conference on Computer Vision (ECCV)},
-  year      = {2026}
-}
+
 ```

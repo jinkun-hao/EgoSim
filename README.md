@@ -9,7 +9,7 @@
 
 <sup>*</sup> Equal Contribution &nbsp;&nbsp; <sup>†</sup> Corresponding Author
 
-[![Paper](https://img.shields.io/badge/Paper-arXiv-red)](https://egosimulator.github.io/EgoSim__Controllable_Egocentric_Video_Simulation_with_Updatable_3D_Memory__arxiv_.pdf)
+[![Paper](https://img.shields.io/badge/Paper-arXiv-red)](https://arxiv.org/abs/2604.01001)
 [![Project Page](https://img.shields.io/badge/Project-Page-blue)](https://egosimulator.github.io/)
 
 </div>

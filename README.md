@@ -1,4 +1,4 @@
-# EgoSim: Egocentric World Simulator for Embodiment Interaction Generation
+# EgoSim: Egocentric World Simulator for Embodied Interaction Generation
 
 <div align="center">
 

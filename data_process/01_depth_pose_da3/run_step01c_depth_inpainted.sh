@@ -2,7 +2,7 @@
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 set -euo pipefail
 # ============================================================
-# Step 01c: DA3 depth on inpainted first frame
+# Step 01c: DA3 depth on inpainted first frame (single clip)
 # conda env: da3
 # Working directory: Depth-Anything-3 repo root
 # ============================================================
@@ -31,17 +31,10 @@ echo "[Step 01c] DA3 Depth on Inpainted Image"
 echo "  Input:  ${INPAINT_CLIP_DIR}/hand_inpaint.png"
 echo ""
 
-TASK_FILE=$(mktemp)
-echo "${INPAINT_CLIP_DIR}" > "${TASK_FILE}"
-
 cd "${DA3_ROOT}"
 PYTHONPATH="${DA3_ROOT}:${PYTHONPATH:-}" \
 CUDA_VISIBLE_DEVICES="${DEVICE}" python "${SCRIPT_DIR}/process_depth_inpainted.py" \
-    --task_file "${TASK_FILE}" \
+    --clip_dir "${INPAINT_CLIP_DIR}" \
     --model_path "${DA3_MODEL}" \
-    --gpu_rank 0 \
-    --world_size 1 \
     --log_dir "${LOG_DIR}"
-
-rm -f "${TASK_FILE}"
 echo "[Step 01c] Done."

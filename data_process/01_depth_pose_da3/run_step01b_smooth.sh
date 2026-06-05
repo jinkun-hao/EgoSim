@@ -2,7 +2,7 @@
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 set -euo pipefail
 # ============================================================
-# Step 01b: Kalman smoothing of camera parameters
+# Step 01b: Kalman smoothing of camera parameters (single clip)
 # conda env: da3 (numpy + scipy only)
 # ============================================================
 #
@@ -15,7 +15,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
 : "${VIDEO_PATH:?Set VIDEO_PATH in run_pipeline.env.sh and source it first}"
-NUM_WORKERS="${NUM_WORKERS:-8}"
 
 CLIP_ID="$(basename "${VIDEO_PATH%.*}")"
 CLIP_DIR="${REPO_ROOT}/tests/samples/${CLIP_ID}"
@@ -29,9 +28,7 @@ echo ""
 python "${SCRIPT_DIR}/smooth_camera_kalman_egovid.py" \
     --input_dir "${PROC_DIR}/poses_da3" \
     --output_dir "${PROC_DIR}/poses_da3_smoothed" \
-    --fps 30 \
-    --num_workers "${NUM_WORKERS}" \
-    --start_idx 0 \
-    --end_idx 1
+    --clip_name "${CLIP_ID}" \
+    --fps 30
 
 echo "[Step 01b] Done."

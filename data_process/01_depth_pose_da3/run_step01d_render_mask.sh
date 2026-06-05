@@ -2,7 +2,7 @@
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 set -euo pipefail
 # ============================================================
-# Step 01d (mask): point-cloud mask video (black points on white; for inference)
+# Step 01d (mask): point-cloud mask video for one clip (for inference)
 # conda env: da3
 # ============================================================
 #

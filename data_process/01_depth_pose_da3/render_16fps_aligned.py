@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 """
-Render 16fps video overlay (CenterCrop+Resize) using smoothed camera poses and first-frame point cloud.
+Render 16fps point-cloud video for a single clip (pipeline Steps 01d / 01d-mask).
+
 Logic:
 1. Load first-frame RGB/Depth + Intrinsics -> Reconstruct Point Cloud in Frame 0.
 2. Load smoothed extrinsics (30fps) -> Compute map to 16fps -> Select poses.

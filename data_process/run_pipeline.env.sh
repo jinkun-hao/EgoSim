@@ -6,11 +6,11 @@
 # ============================================================
 
 # ── Input video ─────────────────────────────────────────────
-export VIDEO_PATH="/path/to/your/video.mp4"
+export VIDEO_PATH="/mnt/shared-storage-user/ailab-idc1-shared/haojinkun/private/WorldModel/EgoWM/egosim-opensource/tests/samples/mini_sample/egovid/1c5dbe17-32ed-4cb3-b657-da5eb15689ac_22155_22275/video.mp4"
 
 # ── Repo roots ──────────────────────────────────────────────
 export DA3_ROOT="/path/to/Depth-Anything-3"
-export HAMER_ROOT="/path/to/hamer"
+export HAMER_ROOT="/mnt/shared-storage-user/ailab-idc1-shared/jiamingda/codes/codes/egoview/hamer"
 export SAM3_ROOT="/path/to/sam3"
 
 # ── Model checkpoints ───────────────────────────────────────
@@ -23,5 +23,4 @@ export CAPTION_MODEL="/path/to/models/Qwen2.5-VL-32B-Instruct"
 
 # ── Optional overrides ──────────────────────────────────────
 # export DEVICE=0            # GPU index (default: 0)
-# export NUM_WORKERS=8       # parallel workers (default: 8)
 # export PYOPENGL_PLATFORM=egl   # or osmesa if no display

@@ -98,13 +98,11 @@ class EgoVidMANOAnnotator:
         self.world_size = world_size
         self.vitdet_init_checkpoint = vitdet_init_checkpoint
         
-        # Load HaMeR with map_location to target device (safer for multiprocess).
         if self.rank == 0:
             print("Loading HaMeR model...")
         self.model, self.model_cfg = load_hamer(
             checkpoint_path, 
             init_renderer=False, 
-            map_location=self.device_str
         )
         self.model = self.model.to(self.device)
         self.model.eval()
@@ -131,7 +129,7 @@ class EgoVidMANOAnnotator:
         detectron2_cfg.train.init_checkpoint = self.vitdet_init_checkpoint
         for i in range(3):
             detectron2_cfg.model.roi_heads.box_predictors[i].test_score_thresh = 0.25
-        self.body_detector = DefaultPredictor_Lazy(detectron2_cfg, device=self.device_str)
+        self.body_detector = DefaultPredictor_Lazy(detectron2_cfg)
         
         # ViTPose keypoint detector.
         self.pose_detector = ViTPoseModel(self.device_str)

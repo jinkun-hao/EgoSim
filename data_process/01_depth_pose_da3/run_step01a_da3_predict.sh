@@ -3,6 +3,7 @@
 set -euo pipefail
 # ============================================================
 # Step 01a: DA3 predict first-frame depth + full-sequence camera
+# Single-clip annotation — configure VIDEO_PATH in run_pipeline.env.sh
 # conda env: da3
 # Working directory: Depth-Anything-3 repo root
 # ============================================================
@@ -29,19 +30,13 @@ echo "  Video:  ${CLIP_DIR}/video_16fps.mp4"
 echo "  Output: ${PROC_DIR}/poses_da3"
 echo ""
 
-CLIP_LIST=$(mktemp)
-echo "${CLIP_DIR}/video_16fps.mp4" > "${CLIP_LIST}"
-
 cd "${DA3_ROOT}"
 PYTHONPATH="${DA3_ROOT}:${PYTHONPATH:-}" \
 CUDA_VISIBLE_DEVICES="${DEVICE}" python "${SCRIPT_DIR}/pred_multi_gpu_2.py" \
-    --prepared_list "${CLIP_LIST}" \
+    --video_path "${CLIP_DIR}/video_16fps.mp4" \
+    --clip_name "${CLIP_ID}" \
     --output_root "${PROC_DIR}/poses_da3" \
     --model_path "${DA3_MODEL}" \
-    --gpu_rank 0 \
-    --world_size 1 \
     --batch_size 128 \
     --skip_check
-
-rm -f "${CLIP_LIST}"
 echo "[Step 01a] Done."

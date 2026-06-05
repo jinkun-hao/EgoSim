@@ -2,7 +2,7 @@
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 set -euo pipefail
 # ============================================================
-# Step 01d: Render point-cloud video (16fps colored overlay)
+# Step 01d: Render point-cloud video for one clip (16fps colored overlay)
 # conda env: da3
 # ============================================================
 #

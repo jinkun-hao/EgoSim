@@ -232,6 +232,19 @@ bash data_process/00_first_frame_mask_inpaint/run_step00b_inpaint.sh
 
 ### Goal 2: Point Cloud Videos → `rendered_scene.mp4` + `pc_mask_video.mp4`
 
+Steps 2.1–2.5 annotate **one clip at a time** — the clip configured in `VIDEO_PATH`.
+Requires Step 1.3 (`video_16fps.mp4` + `hand_inpaint.png`) and `conda activate da3`.
+
+Scripts live under `data_process/01_depth_pose_da3/`:
+
+| Step | Script | Output |
+|------|--------|--------|
+| 2.1 | `run_step01a_da3_predict.sh` | `_proc/poses_da3/<clip_name>/` |
+| 2.2 | `run_step01b_smooth.sh` | `_proc/poses_da3_smoothed/<clip_name>/` |
+| 2.3 | `run_step01c_depth_inpainted.sh` | `_proc/inpainted/<clip_name>/depth_first_frame.npy` |
+| 2.4 | `run_step01d_render.sh` | `rendered_scene.mp4`, `overlay.mp4` |
+| 2.5 | `run_step01d_render_mask.sh` | `pc_mask_video.mp4` |
+
 #### Step 2.1 — DA3 depth + camera parameter prediction
 
 ```bash
@@ -284,6 +297,24 @@ bash data_process/01_depth_pose_da3/run_step01d_render_mask.sh
 ```
 
 **Output:** `pc_mask_video.mp4` (black points on white background)
+
+Or run Steps 2.4 and 2.5 together:
+
+```bash
+bash data_process/01_depth_pose_da3/run_render_16fps_example.sh
+```
+
+**Python entry points** (called by the scripts above):
+
+| File | Role |
+|------|------|
+| `pred_multi_gpu_2.py` | DA3 depth + camera on `video_16fps.mp4` |
+| `smooth_camera_kalman_egovid.py` | Kalman smoothing (`--clip_name`) |
+| `process_depth_inpainted.py` | First-frame depth on `hand_inpaint.png` (`--clip_dir`) |
+| `render_16fps_aligned.py` | Point-cloud render for one clip |
+| `camera_trajectory_render_pyrender.py` | PyRender backend used by `render_16fps_aligned.py` |
+
+> `split_data.py` is a legacy batch helper and is not used by the single-clip pipeline.
 
 ---
 

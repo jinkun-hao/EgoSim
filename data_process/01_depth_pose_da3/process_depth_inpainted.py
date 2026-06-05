@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 '''
-Read per-clip folders from a list or scan a root; run DA3 on the inpainted first frame
-(hand_inpaint.png) and write depth / intrinsics / point cloud back into each folder.
+Run DA3 on the inpainted first frame (hand_inpaint.png) for a single clip folder.
+Writes depth / intrinsics / point cloud back into that folder.
 
-Multi-GPU: assign tasks where (line_index % world_size) == gpu_rank over [start_idx, end_idx).
-
-Single-GPU example:
-CUDA_VISIBLE_DEVICES=0 python process_depth_from_list.py \
-    --task_file /path/to/folders.txt \
-    --start_idx 0 --end_idx 10000 \
-    --gpu_rank 0 --world_size 8 \
-    --log_dir ./depth_logs
-
-Or scan a directory of clip folders:
-CUDA_VISIBLE_DEVICES=0 python process_depth_from_list.py \
-    --input_root /path/to/inpainted_clips \
-    --gpu_rank 0
+Single-clip example (pipeline Step 01c):
+CUDA_VISIBLE_DEVICES=0 python process_depth_inpainted.py \
+    --clip_dir /path/to/_proc/inpainted/<clip_name> \
+    --model_path /path/to/DA3NESTED-GIANT-LARGE-1.1
 '''
 
 import os
@@ -144,18 +135,24 @@ def process_single_folder(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="First-frame depth from inpainted clip folders")
+    parser = argparse.ArgumentParser(description="First-frame depth from one inpainted clip folder")
+    parser.add_argument(
+        "--clip_dir",
+        type=str,
+        default=None,
+        help="Single clip folder containing hand_inpaint.png (preferred for Step 01c).",
+    )
     parser.add_argument(
         "--input_root",
         type=str,
         default=None,
-        help="Root containing one subfolder per clip (hand_inpaint.png). Optional if --task_file is set.",
+        help="[Legacy] Root containing one subfolder per clip.",
     )
     parser.add_argument(
         "--task_file",
         type=str,
         default=None,
-        help="Text file: one clip folder path per line. Takes precedence over --input_root.",
+        help="[Legacy] Text file with one clip folder path per line.",
     )
     parser.add_argument(
         "--model_path",
@@ -175,8 +172,8 @@ def main():
         default=None,
         help="End index (0-based, exclusive); default: all.",
     )
-    parser.add_argument("--gpu_rank", type=int, required=True, help="GPU rank index (0 .. world_size-1)")
-    parser.add_argument("--world_size", type=int, default=8, help="Total GPU count (world size)")
+    parser.add_argument("--gpu_rank", type=int, default=0, help="[Legacy batch] GPU rank index")
+    parser.add_argument("--world_size", type=int, default=1, help="[Legacy batch] Total GPU count")
     parser.add_argument(
         "--device",
         type=int,
@@ -211,8 +208,8 @@ def main():
     
     args = parser.parse_args()
 
-    if args.task_file is None and args.input_root is None:
-        raise SystemExit("Provide --task_file or --input_root")
+    if args.clip_dir is None and args.task_file is None and args.input_root is None:
+        raise SystemExit("Provide --clip_dir (single clip) or --task_file / --input_root (legacy batch)")
 
     # Suppress INFO logs.
     logging.getLogger().setLevel(logging.WARNING)
@@ -227,16 +224,16 @@ def main():
     else:
         device = torch.device("cpu")
 
-    print(f"[GPU {rank}] device: {device}", flush=True)
-    print(f"[GPU {rank}] index range: [{args.start_idx}:{args.end_idx}] (half-open)", flush=True)
+    print(f"[Step 01c] device: {device}", flush=True)
+    if args.clip_dir is None:
+        print(f"[Step 01c] index range: [{args.start_idx}:{args.end_idx}] (half-open)", flush=True)
 
-    # Load DA3.
-    print(f"[GPU {rank}] loading DA3: {args.model_path}", flush=True)
+    print(f"[Step 01c] loading DA3: {args.model_path}", flush=True)
     from src.depth_anything_3.api import DepthAnything3
 
     model = DepthAnything3.from_pretrained(args.model_path).to(device)
     model.eval()
-    print(f"[GPU {rank}] model ready.", flush=True)
+    print(f"[Step 01c] model ready.", flush=True)
 
     # Logs / temp dir.
     log_dir = Path(args.log_dir)
@@ -247,20 +244,25 @@ def main():
     log_success_path = log_dir / f"success_gpu{rank}.txt"
     log_fail_path = log_dir / f"failed_gpu{rank}.txt"
 
-    # Task list: file wins over directory scan.
-    if args.task_file is not None:
-        print(f"[GPU {rank}] task file: {args.task_file}", flush=True)
+    if args.clip_dir is not None:
+        my_folders = [str(Path(args.clip_dir).resolve())]
+        print(f"[Step 01c] clip_dir: {my_folders[0]}", flush=True)
+    elif args.task_file is not None:
+        print(f"[Step 01c] task file: {args.task_file}", flush=True)
         with open(args.task_file, "r") as f:
             all_tasks = [line.strip() for line in f if line.strip()]
+        end_idx = args.end_idx if args.end_idx is not None else len(all_tasks)
+        sub_tasks = all_tasks[args.start_idx:end_idx]
+        my_folders = [p for i, p in enumerate(sub_tasks) if i % world_size == rank]
+        print(f"[Step 01c] tasks: {len(sub_tasks)}, assigned: {len(my_folders)}", flush=True)
     else:
         input_root = Path(args.input_root)
-        print(f"[GPU {rank}] scanning: {input_root}", flush=True)
+        print(f"[Step 01c] scanning: {input_root}", flush=True)
         all_tasks = list_video_folders(input_root)
-
-    end_idx = args.end_idx if args.end_idx is not None else len(all_tasks)
-    sub_tasks = all_tasks[args.start_idx:end_idx]
-    my_folders = [p for i, p in enumerate(sub_tasks) if i % world_size == rank]
-    print(f"[GPU {rank}] tasks: {len(sub_tasks)}, assigned: {len(my_folders)}", flush=True)
+        end_idx = args.end_idx if args.end_idx is not None else len(all_tasks)
+        sub_tasks = all_tasks[args.start_idx:end_idx]
+        my_folders = [p for i, p in enumerate(sub_tasks) if i % world_size == rank]
+        print(f"[Step 01c] tasks: {len(sub_tasks)}, assigned: {len(my_folders)}", flush=True)
     
     success_count = 0
     skip_count = 0
@@ -323,10 +325,12 @@ def main():
     except:
         pass
     
-    print(f"\n[GPU {rank}] done.", flush=True)
-    print(f"[GPU {rank}] ok={success_count}, skip={skip_count}, fail={fail_count}", flush=True)
+    print(f"\n[Step 01c] done.", flush=True)
+    print(f"[Step 01c] ok={success_count}, skip={skip_count}, fail={fail_count}", flush=True)
     if success_count > 0:
-        print(f"[GPU {rank}] avg: {total_time/success_count:.2f}s/clip", flush=True)
+        print(f"[Step 01c] avg: {total_time/success_count:.2f}s/clip", flush=True)
+    if fail_count > 0:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

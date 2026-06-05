@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # Copyright (c) jiamingda (https://github.com/Luyitas)
 """
-Camera trajectory smoothing for EgoVid-scale layouts (500K+ clip folders).
-- Iterator-friendly: avoid loading all folder names at once.
-- Resume: skip clips that already have outputs.
-- Optional multiprocessing.
-- One clip at a time to bound memory.
+Kalman smoothing of DA3 camera parameters for a single clip (pipeline Step 01b).
+
+Also supports legacy batch mode over many clip folders under --input_dir.
 """
 
 import os
@@ -544,11 +542,13 @@ def batch_process_clips_single(root_input_dir, root_output_dir,
 
 # ===================== CLI =====================
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="EgoVid camera trajectory smoothing")
+    parser = argparse.ArgumentParser(description="Kalman smoothing of DA3 camera trajectories")
     parser.add_argument("--input_dir", type=str, required=True,
                         help="Input root (each clip subdir has extrinsics_*.npy)")
     parser.add_argument("--output_dir", type=str, required=True,
                         help="Output root")
+    parser.add_argument("--clip_name", type=str, default=None,
+                        help="Process one clip subfolder (preferred for single-clip annotation)")
     parser.add_argument("--fps", type=int, default=30, help="Video FPS")
     parser.add_argument("--process_noise", type=float, default=1e-4, help="Kalman process noise")
     parser.add_argument("--measurement_noise", type=float, default=1e-3, help="Kalman measurement noise")
@@ -573,7 +573,24 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    if args.single_process:
+    if args.clip_name:
+        result_clip_name, success, message = process_single_clip_egovid(
+            clip_name=args.clip_name,
+            root_input_dir=args.input_dir,
+            root_output_dir=args.output_dir,
+            fps=args.fps,
+            process_noise=args.process_noise,
+            measurement_noise=args.measurement_noise,
+            trans_thresh=args.trans_thresh,
+            rot_thresh=args.rot_thresh,
+            skip_existing=args.skip_existing,
+            copy_depth=args.copy_depth,
+            copy_intrinsics=args.copy_intrinsics,
+        )
+        if not success:
+            raise SystemExit(f"[Step 01b] Failed ({result_clip_name}): {message}")
+        print(f"[Step 01b] Done ({result_clip_name}): {message}")
+    elif args.single_process:
         batch_process_clips_single(
             root_input_dir=args.input_dir,
             root_output_dir=args.output_dir,

@@ -1,0 +1,13 @@
+modes:
+  full:
+    output_template: incremental_quicktest_full_{timestamp}
+    enable_egosim_state: true
+    enable_phrase_prediction: true
+    spatial_subsample_override: 1
+    tsdf_voxel_size_override: 0.0025
+  recon_visualize:
+    output_template: incremental_quicktest_reconviz_{timestamp}
+    enable_egosim_state: true
+    enable_phrase_prediction: true
+    recon_visualize: true
+    spatial_subsample_override: 2

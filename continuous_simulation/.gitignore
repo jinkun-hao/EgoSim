@@ -1,0 +1,15 @@
+outputs/
+artifacts/
+checkpoints/
+*.safetensors
+*.pth
+*.pt
+*.ckpt
+*.bin
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+configs/env_paths.yaml

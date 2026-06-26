@@ -1,0 +1,49 @@
+runtime:
+  # Quicktest runs: <timestamp subdir>/task/video_id/*.mp4 under EgoSim/output/continuous_generation/
+  output_root: ../../output/continuous_generation
+  gpu_id: 0
+  offline: true
+  torch_cuda_arch_list: "9.0"
+  pyopengl_platform: egl
+  unset_proxies: true
+  python:
+    wan:
+      env_name: egosim
+      executable: ""
+    scene:
+      env_name: egosim-scene
+      executable: ""
+
+models:
+  model_root: ../EgoSim-14B
+  qwen_vl_root: ../artifacts/models/qwen-vl/Qwen3-VL-4B-Instruct
+  prior_depth_root: ../artifacts/models/priorda
+
+data:
+  dataset: egodex
+  # Mini-sample parent: resolves metadata paths under process_result/ and outputs/ (e.g. prior generated clips).
+  dataset_root: ../../tests/samples/mini_sample/continuous_generation
+  # Single source of truth for bundled quicktest / mini-sample rows (recon_visualize + full).
+  metadata_path: ../../tests/samples/mini_sample/continuous_generation/metadata.csv
+
+backend:
+  incremental_script: ../src/egowm_incremental/backends/incremental_inference.py
+  egosim_state_script: ../src/egowm_incremental/backends/egosim_state_subprocess.py
+  predict_phrases_script: ../src/egowm_incremental/vendor/predict_phrases.py
+
+quicktest:
+  part_prefix: test_3dmem
+  skip_existing: false
+  use_long_prompt: true
+  only_multi_clip: true
+  num_inference_steps: 50
+  cfg_scale: 1.0
+  fps: 16
+  egosim_state_pipeline: dav3
+  spatial_subsample: 1
+  temporal_subsample: 1
+  use_color_depth_overlap: false
+  scene_phrases:
+    - arm
+    - person
+    - hand

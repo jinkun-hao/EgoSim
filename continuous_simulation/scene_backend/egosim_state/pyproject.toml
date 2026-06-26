@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel", "torch"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint.isort]
+lines-between-types = 1
+lines-after-imports = 2
+
+[project]
+name = "egosim-state"
+description = "EgoSim State scene backend for the EgoWM incremental pipeline"
+authors = [
+    {name = "The EgoSim State Authors", email = "jiahuih@nvidia.com"},
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dynamic = ["version"]
+dependencies = [
+    "numpy",
+    "einops",
+    "omegaconf",
+    "tqdm",
+    "rerun-sdk",
+    "imageio[ffmpeg]",
+    "opencv-python",
+    "python-pycg",
+    "timm",
+    "transformers",
+    "gdown",
+    "OpenEXR",
+    "kornia",
+    "viser",
+    "click",
+]
+
+[project.optional-dependencies]
+dav3 = [
+    "depth-anything-3 @ git+https://github.com/heiwang1997/Depth-Anything-3.git@main"
+]
+
+[project.scripts]
+egosim-state = "egosim_state.cli.main:main"
+egosim_state = "egosim_state.cli.main:main"
+
+[tool.setuptools.package-data]
+egosim_state = ["configs/**/*.yaml", "configs/**/*.yml"]

@@ -1,0 +1,16 @@
+# Scene backend runtime deps (from egosim_state/pyproject.toml; torch installed separately)
+numpy
+einops
+omegaconf
+tqdm
+rerun-sdk
+imageio[ffmpeg]
+opencv-python
+python-pycg
+timm
+transformers
+gdown
+OpenEXR
+kornia
+viser
+click

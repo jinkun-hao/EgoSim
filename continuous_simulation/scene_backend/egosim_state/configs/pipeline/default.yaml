@@ -1,0 +1,50 @@
+defaults:
+  - /slam: default
+
+instance: egosim_state.pipeline.default.DefaultAnnotationPipeline
+
+# Init configs
+init:
+  camera_type: "pinhole"
+  intrinsics: "geocalib"
+  instance:
+    kf_gap_sec: 0.25
+    use_sam3: true
+    force_last_frame_sam_keyframe: true  # force last frame as SAM detection keyframe
+    continuous_tracking: true
+    phrases: 
+      - arm
+      - person
+      - hand
+
+
+
+  
+    add_sky: true
+    depth_filter: true
+    depth_distance_thresh: 0.15
+
+slam:
+  keyframe_depth: unidepth-l
+  optimize_intrinsics: ${neq:${..init.intrinsics},"gt"}
+
+# Post-processing configs
+post:
+  depth_align_model: "adaptive_unidepth-l_svda"
+
+# Output configs
+output:
+  # Path to save results
+  path: egosim_state_results/
+  skip_exists: false
+
+  # Save artifacts and a info file
+  save_artifacts: true
+
+  # Save reconstruction from SLAM
+  save_slam_map: true
+
+  # Visualization videos to BASE_PATH/egosim_state/xxx.mp4
+  save_viz: true
+  viz_downsample: 2
+  viz_attributes: [['rgb', 'instance'], ['depth', 'pcd']]

@@ -1,26 +1,24 @@
 #!/bin/bash
-# Copyright (c) jiamingda (https://github.com/Luyitas)
-# ============================================================
-# Pipeline configuration — edit this file once, then run each
-# step with:  bash data_process/run_stepXX_*.sh
-# ============================================================
+# Pipeline path configuration for data_process steps.
+# Defaults are relative to the EgoSim repo; override any export before sourcing.
 
-# ── Input video ─────────────────────────────────────────────
-export VIDEO_PATH="/mnt/shared-storage-user/ailab-idc1-shared/haojinkun/private/WorldModel/EgoWM/egosim-opensource/tests/samples/mini_sample/egovid/1c5dbe17-32ed-4cb3-b657-da5eb15689ac_22155_22275/video.mp4"
+_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+_EGOSIM_ROOT="$(cd "${_SCRIPT_DIR}/.." && pwd)"
+_REPOS_DIR="${REPOS_DIR:-${_EGOSIM_ROOT}/../repos}"
+_HF_MODELS="${HF_MODELS:-${HF_HOME:-${HOME}/.cache/huggingface}/models}"
 
-# ── Repo roots ──────────────────────────────────────────────
-export DA3_ROOT="/path/to/Depth-Anything-3"
-export HAMER_ROOT="/mnt/shared-storage-user/ailab-idc1-shared/jiamingda/codes/codes/egoview/hamer"
-export SAM3_ROOT="/path/to/sam3"
+export VIDEO_PATH="${VIDEO_PATH:-/path/to/your/video.mp4}"
 
-# ── Model checkpoints ───────────────────────────────────────
-export DA3_MODEL="${DA3_ROOT}/checkpoints/DA3NESTED-GIANT-LARGE-1.1"
-export SAM3_CHECKPOINT="${SAM3_ROOT}/checkpoints/sam3.pt"
-export INPAINT_MODEL="/path/to/models/Qwen-Image-Edit-2511"
-export VITDET_INIT_CHECKPOINT="${HAMER_ROOT}/_DATA/model_final_f05665.pkl"
-export MANO_PATH="${HAMER_ROOT}/_DATA/data/mano"
-export CAPTION_MODEL="/path/to/models/Qwen2.5-VL-32B-Instruct"
+export DA3_ROOT="${DA3_ROOT:-${_REPOS_DIR}/Depth-Anything-3}"
+export HAMER_ROOT="${HAMER_ROOT:-${_REPOS_DIR}/hamer}"
+export SAM3_ROOT="${SAM3_ROOT:-${_REPOS_DIR}/sam3}"
 
-# ── Optional overrides ──────────────────────────────────────
-# export DEVICE=0            # GPU index (default: 0)
-# export PYOPENGL_PLATFORM=egl   # or osmesa if no display
+export DA3_MODEL="${DA3_MODEL:-${DA3_ROOT}/checkpoints/DA3NESTED-GIANT-LARGE-1.1}"
+export SAM3_CHECKPOINT="${SAM3_CHECKPOINT:-${SAM3_ROOT}/checkpoints/sam3.pt}"
+export INPAINT_MODEL="${INPAINT_MODEL:-${_HF_MODELS}/Qwen-Image-Edit-2511}"
+export VITDET_INIT_CHECKPOINT="${VITDET_INIT_CHECKPOINT:-${HAMER_ROOT}/_DATA/model_final_f05665.pkl}"
+export MANO_PATH="${MANO_PATH:-${HAMER_ROOT}/_DATA/data/mano}"
+export CAPTION_MODEL="${CAPTION_MODEL:-${_HF_MODELS}/Qwen2.5-VL-7B-Instruct}"
+
+# export DEVICE=0
+# export PYOPENGL_PLATFORM=egl

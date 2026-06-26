@@ -1,0 +1,19 @@
+opencv-python==4.11.0.86
+open3d==0.19.0
+pyrender==0.1.45
+accelerate==1.12.0
+build==1.2.2.post1
+
+# Runtime support deps for local wheels installed with --no-deps in setup_envs.sh.
+# Keep this list aligned with the actual import paths reached by sam3 / Depth-Anything-3.
+iopath>=0.1.10
+ftfy==6.1.1
+decord
+pycocotools
+addict
+evo
+
+# Qwen3-VL phrase prediction.
+qwen-vl-utils>=0.0.8
+
+# The modified scene backend is installed from scene_backend/egosim_state by scripts/setup_envs.sh.

@@ -1,7 +1,6 @@
-# EgoSim: Egocentric World Simulator for Embodied Interaction Generation
+# EgoSim
 
 <div align="center">
-
 
 [Jinkun Hao](https://jinkun-hao.github.io/)<sup>1*</sup>, [Mingda Jia](https://luyitas.github.io/)<sup>2*</sup>, [Ruiyan Wang](https://ryan-w2024.github.io/)<sup>1</sup>, [Xihui Liu](https://xh-liu.github.io/)<sup>3</sup>, [Ran Yi](https://yiranran.github.io/)<sup>1†</sup>, [Lizhuang Ma](https://dmcv.sjtu.edu.cn/people/)<sup>1†</sup>, [Jiangmiao Pang](https://oceanpang.github.io/)<sup>2</sup>, [Xudong Xu](https://sheldontsui.github.io/)<sup>2</sup>
 
@@ -14,13 +13,17 @@
 
 </div>
 
+## 📢 News
+
+- 🚀 EgoSim got accepted to **ECCV 2026**.
+
 ---
 
 ## Overview
 
 ![Teaser](images/teaser.png)
 
-**EgoSim** is an egocentric world simulator for embodiment interaction generation. Given an initial 3D state and a sequence of actions, EgoSim generates temporally and spatially consistent egocentric observations with high-quality dexterous interactions. EgoSim also persistently updates a 3D state for continuous simulation.
+**EgoSim** is an egocentric world simulator for embodiment interaction generation. Given an initial 3D state and a sequence of actions, EgoSim generates temporally and spatially consistent egocentric observations with high-quality dexterous interactions. EgoSim also persistently updates a 3D scene state for continuous simulation.
 
 Key features:
 - **Controllable egocentric video generation** conditioned on 3D scene state and action sequences
@@ -31,7 +34,7 @@ Key features:
 ## TODO
 
 - [x] **Inference** — run EgoSim-14B on Egodex and EgoVid datasets.
-- [ ] **Continuous simulation** — multi-clip incremental generation with an updatable 3D scene state. Coming soon.
+- [x] **Continuous simulation** — multi-clip incremental generation with an updatable 3D scene state; see [**`continuous_simulation/README.md`**](continuous_simulation/README.md).
 - [x] **Data preparation** — annotate raw egocentric videos to produce inference-ready assets; see [**`data_process/README.md`**](data_process/README.md).
 - [ ] **Training** — coming soon.
 
@@ -40,8 +43,8 @@ Key features:
 Requires Python 3.10+, CUDA 12.1+.
 
 ```bash
-git clone https://github.com/your-org/egosim.git
-cd egosim-opensource
+git clone https://github.com/jinkun-hao/EgoSim.git
+cd EgoSim
 ```
 
 ```bash
@@ -103,10 +106,10 @@ unzip demo_data.zip -d tests/samples/
 
 ## Inference
 
-All commands below assume you are inside the `egosim-opensource/` directory:
+All commands below assume you are inside the **EgoSim** repository root:
 
 ```bash
-cd egosim-opensource
+cd EgoSim
 ```
 
 ```bash
@@ -148,6 +151,10 @@ Key options:
 | `--max_samples` | — | Limit number of samples (useful for testing) |
 | `--skip_existing` | — | Skip already-generated videos |
 
+## Continuous simulation
+
+Multi-clip incremental generation with updatable 3D scene state lives in [`continuous_simulation/`](continuous_simulation/README.md). After installing the main project, follow that README to set up the scene environment and run `recon_visualize` or `full` modes.
+
 ## Acknowledgements
 
 This codebase is built upon the following open-source projects. We sincerely thank the authors for their contributions.
@@ -155,6 +162,8 @@ This codebase is built upon the following open-source projects. We sincerely tha
 - [Wan2.1](https://github.com/Wan-Video/Wan2.1)
 - [DiffSynth Studio](https://github.com/modelscope/diffsynth-studio)
 - [VACE](https://github.com/ali-vilab/VACE)
+
+Scene-reconstruction dependencies for [`continuous_simulation/`](continuous_simulation/README.md) are listed in that README.
 
 ## Citation
 

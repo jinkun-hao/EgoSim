@@ -1,0 +1,2 @@
+# Install diffsynth separately with:
+#   DIFFSYNTH_PATH=/path/to/diffsynth bash scripts/setup_envs.sh
